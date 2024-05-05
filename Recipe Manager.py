@@ -5,10 +5,10 @@ class Recipe:
     def __init__(self):
         self.name = input("\nName of meal:\n")
         self.ingredients = {}
-        no_ingredients = int_validator("How many ingredients are in the meal?\n")
-        for i in range (1, (no_ingredients+1)):
-            ingredient = add_ingredient()
+        ingredient = add_ingredient()
+        while ingredient.casefold() != "finished":
             self.ingredients[ingredient] = int_validator("How much? (Standard units = g, ml, pieces)\n")
+            ingredient = add_ingredient()
         self.servings = int_validator("How many does it serve?\n")
     
     def print_recipe(self):
@@ -68,8 +68,8 @@ def ingredient_validator(ingredient):
             # If the ingredient is not in the file, ask the user if they want to add it
             print("That ingredient doesn't appear in the list of known ingredients! Make sure that you have spelled it correctly.")
             print("If you are sure you spelled the ingredient correctly and want to add it to the database, enter 'New'.\nOtherwise try to enter the ingredient again.")
-            answer = input("")
-            if answer.casefold() == "new":
+            ingredient = input("")
+            if ingredient.casefold() == "new":
                 check = False
                 while not check:
                     ingredient = input("Write again the new ingredient, ensuring it is spelled correctly:\n")
@@ -151,29 +151,43 @@ def print_recipes():
         return
 
 def add_recipe():
-
-    no_recipes = int_validator("How many recipes would you like to add?\n")
     
-    for i in range (no_recipes):
-        recipe = Recipe()
-        recipes.append(recipe)
-        recipe.print_recipe()
-        
-    recipe_writer()
+    recipe = Recipe()
+    recipes.append(recipe)
+    recipe.print_recipe()
+    answer = ""
+    while (answer.casefold() != "y") or (answer.casefold() != "n"):
+        answer = input("Would you like to add another recipe? (y/n)\n")
+        if answer.casefold() == "y":
+            add_recipe()
+        elif answer.casefold() == "n":
+            recipe_writer()
+            return
+        else:
+            print("Invalid Input!")
 
 def remove_recipe():
-    print("Enter the name of the recipe you would like to remove (enter 'finished' to stop):")
-    answer = input("")
-    if answer.casefold() == "finished":
+    print_recipes()
+    
+    if len(recipes) == 0:
         return
     else:
-        for recipe in recipes:
-            if recipe.name.casefold().strip() == answer.casefold().strip():
-                recipes.remove(recipe)
-                recipe_writer()  # Save the updated recipes list to the file
-                remove_recipe()
-        print("\nThat recipe does not exist in the list. Try again and ensure you spelled it correctly.")
-        remove_recipe()
+        print("Enter the name of the recipe you would like to remove (enter 'finished' to stop):")
+        answer = input("").strip().casefold()
+        if answer == "finished":
+            return
+        else:
+            found = False
+            for recipe in recipes:
+                if recipe.name.casefold().strip() == answer:
+                    recipes.remove(recipe)
+                    recipe_writer()  # Save the updated recipes list to the file
+                    found = True
+                    break  # Exit loop once the recipe is found and removed
+            if not found:
+                print("\nThat recipe does not exist in the list. Try again and ensure you spelled it correctly.")
+            remove_recipe()  # Continue removing recipes until the user inputs "finished"
+
 
 def menu():
     print("\n-------------------------------------------")
@@ -189,7 +203,6 @@ def menu():
         add_recipe()
         menu()
     elif user_input == 4:
-        print_recipes()
         remove_recipe()
         menu()
     elif user_input == 5:
