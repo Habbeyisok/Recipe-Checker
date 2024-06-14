@@ -4,9 +4,7 @@ import logging
 
 def test_main_with_data_file(monkeypatch, capsys):
     inputs = iter(['1', '7'])
-    
     monkeypatch.setattr('builtins.input', lambda _: next(inputs))
-    logging.info("we broke print")
     test_args = ["script.py", "--data-file", "sample.json"]
     monkeypatch.setattr(sys, 'argv', test_args)
     main()
