@@ -1,0 +1,21 @@
+{
+    "Recipes": [
+        {
+            "name": "Cheese Toastie ",
+            "ingredients": {
+                "Cheese": 50,
+                "bread": 100,
+                "butter": 10
+            },
+            "servings": 1
+        }
+    ],
+    "FridgeInventory": {
+        "ingredients": {
+            "tomato": 3,
+            "Cheese": 50,
+            "bread": 500,
+            "butter": 250
+        }
+    }
+}
